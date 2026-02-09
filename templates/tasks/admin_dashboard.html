@@ -1,44 +1,69 @@
 {% extends 'tasks/base.html' %}
 
 {% block title %}Admin Dashboard{% endblock %}
-{% block header_title %}Team Overview{% endblock %}
+{% block header_title %}
+    {% if tab == 'assign' %}Assign Team Task
+    {% else %}Team Details
+    {% endif %}
+{% endblock %}
 
 {% block content %}
+
+{% if tab == 'assign' %}
 <section>
-    <h3>Team Progress & Completion Reports</h3>
+    <div style="background: white; padding: 20px; border-radius: 8px; max-width: 600px;">
+        <form method="POST" action="{% url 'assign_task' %}">
+            {% csrf_token %}
+            <div class="input-group">
+                <label>Task Title</label>
+                {{ form.title }}
+            </div>
+            <div class="input-group">
+                <label>Description</label>
+                {{ form.description }}
+            </div>
+            <div class="input-group">
+                <label>Assign To (Your Team)</label>
+                {{ form.assigned_to }}
+            </div>
+            <div class="input-group">
+                <label>Due Date</label>
+                {{ form.due_date }}
+            </div>
+            <button type="submit" class="btn-update">Assign Task</button>
+        </form>
+    </div>
+</section>
+
+{% else %}
+<section>
     <table class="data-table">
         <thead>
             <tr>
-                <th>Task</th>
-                <th>Assigned User</th>
+                <th>Title</th>
+                <th>Assigned To</th>
+                <th>Due Date</th>
                 <th>Status</th>
-                <th>Completion Report</th>
-                <th>Worked Hours</th>
+                <th>Report</th>
+                <th>Hours</th>
             </tr>
         </thead>
         <tbody>
             {% for task in tasks %}
             <tr>
-                <td><strong>{{ task.title }}</strong></td>
+                <td>{{ task.title }}</td>
                 <td>{{ task.assigned_to.username }}</td>
-                <td>
-                    <span class="status-badge status-{{ task.status|lower }}">{{ task.status }}</span>
-                </td>
-                <td>
-                    {% if task.status == 'COMPLETED' %}
-                        {{ task.completion_report }}
-                    {% else %}
-                        <small style="color: #a0aec0;">Waiting for completion...</small>
-                    {% endif %}
-                </td>
+                <td>{{ task.due_date }}</td>
+                <td><span class="status-badge status-{{ task.status|lower }}">{{ task.status }}</span></td>
+                <td>{{ task.completion_report|default:"-" }}</td>
                 <td>{{ task.worked_hours|default:"0" }}</td>
             </tr>
             {% empty %}
-            <tr>
-                <td colspan="5" style="text-align: center;">No users or tasks assigned to you yet.</td>
-            </tr>
+            <tr><td colspan="6">No tasks found.</td></tr>
             {% endfor %}
         </tbody>
     </table>
 </section>
+{% endif %}
+
 {% endblock %}

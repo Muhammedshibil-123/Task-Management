@@ -16,13 +16,16 @@
             <nav class="sidebar-nav">
                 <ul>
                     {% if user.role == 'SUPERADMIN' %}
-                        <li><a href="{% url 'superadmin_dashboard' %}">User Management</a></li>
-                        <li><a href="{% url 'superadmin_dashboard' %}">All Tasks</a></li>
+                        <li><a href="?tab=users" class="{% if tab == 'users' %}active{% endif %}">Users</a></li>
+                        <li><a href="?tab=assign" class="{% if tab == 'assign' %}active{% endif %}">Assign Task</a></li>
+                        <li><a href="?tab=details" class="{% if tab == 'details' %}active{% endif %}">Details</a></li>
                     {% elif user.role == 'ADMIN' %}
-                        <li><a href="{% url 'admin_dashboard' %}">Team Tasks</a></li>
-                        <li><a href="#">Assign Tasks</a></li>
+                        <li><a href="?tab=assign" class="{% if tab == 'assign' %}active{% endif %}">Assign Task</a></li>
+                        <li><a href="?tab=details" class="{% if tab == 'details' %}active{% endif %}">Details</a></li>
+                    {% else %}
+                        <li><a href="#" class="active">My Tasks</a></li>
                     {% endif %}
-                    <li><a href="{% url 'user_page' %}">My Profile</a></li>
+                    
                     <li><a href="{% url 'logout' %}" style="margin-top: 50px; color: #fc8181;">Logout</a></li>
                 </ul>
             </nav>

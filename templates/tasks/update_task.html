@@ -1,0 +1,30 @@
+{% extends 'tasks/base.html' %}
+
+{% block title %}Complete Task{% endblock %}
+{% block header_title %}Submit Completion Report{% endblock %}
+
+{% block content %}
+<section style="max-width: 600px; background: white; padding: 30px; border-radius: 8px;">
+    <h3 style="margin-top: 0;">{{ task.title }}</h3>
+    <p style="color: #718096; margin-bottom: 20px;">{{ task.description }}</p>
+
+    <form method="POST">
+        {% csrf_token %}
+        
+        <div class="input-group">
+            <label>Worked Hours</label>
+            {{ form.worked_hours }}
+        </div>
+
+        <div class="input-group">
+            <label>Completion Report (What did you fix?)</label>
+            {{ form.completion_report }}
+        </div>
+
+        <div style="margin-top: 20px;">
+            <button type="submit" class="btn-update">Submit & Mark Completed</button>
+            <a href="{% url 'user_page' %}" style="margin-left: 15px; color: #718096; text-decoration: none;">Cancel</a>
+        </div>
+    </form>
+</section>
+{% endblock %}

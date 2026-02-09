@@ -1,25 +1,39 @@
-/* Dashboard Layout */
+body {
+    margin: 0;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: #f7fafc;
+    color: #2d3748;
+}
+
 .dashboard-container {
     display: flex;
     min-height: 100vh;
-    font-family: 'Inter', sans-serif;
-    background-color: #f7fafc;
 }
 
-/* Sidebar Styling */
 .sidebar {
     width: 260px;
-    background-color: #2d3748;
+    background-color: #1a202c;
     color: white;
-    padding: 20px 0;
     display: flex;
     flex-direction: column;
+    flex-shrink: 0;
 }
 
 .sidebar-header {
-    padding: 0 20px 20px;
-    border-bottom: 1px solid #4a5568;
-    margin-bottom: 20px;
+    padding: 24px;
+    border-bottom: 1px solid #2d3748;
+}
+
+.sidebar-header h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: #f7fafc;
+}
+
+.sidebar-nav {
+    flex: 1;
+    padding: 20px 0;
 }
 
 .sidebar-nav ul {
@@ -30,85 +44,233 @@
 
 .sidebar-nav li a {
     display: block;
-    padding: 12px 20px;
-    color: #cbd5e0;
+    padding: 12px 24px;
+    color: #a0aec0;
     text-decoration: none;
-    transition: background 0.2s;
+    font-weight: 500;
+    transition: all 0.2s;
+    border-left: 3px solid transparent;
 }
 
 .sidebar-nav li a:hover {
-    background-color: #4a5568;
+    background-color: #2d3748;
     color: white;
 }
 
 .sidebar-nav li a.active {
-    background-color: #667eea;
+    background-color: #2d3748;
     color: white;
+    border-left-color: #667eea;
 }
 
-/* Main Content Area */
 .main-content {
     flex: 1;
-    padding: 30px;
+    padding: 40px;
     overflow-y: auto;
+    height: 100vh;
+    box-sizing: border-box;
 }
 
 .content-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 30px;
+    margin-bottom: 32px;
 }
 
-/* Table Styling */
+.content-header h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+    color: #1a202c;
+}
+
+.content-header span {
+    color: #718096;
+}
+
+section {
+    margin-bottom: 40px;
+}
+
+h3 {
+    font-size: 18px;
+    color: #4a5568;
+    margin-bottom: 16px;
+    margin-top: 0;
+}
+
 .data-table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0;
     background: white;
     border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     overflow: hidden;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
 }
 
-.data-table th, .data-table td {
-    padding: 15px;
-    text-align: left;
-    border-bottom: 1px solid #edf2f7;
+.data-table thead {
+    background-color: #f7fafc;
 }
 
 .data-table th {
-    background-color: #edf2f7;
-    color: #4a5568;
-    font-weight: 600;
-}
-
-/* Status Badges */
-.status-badge {
-    padding: 4px 8px;
-    border-radius: 4px;
+    text-align: left;
+    padding: 16px 24px;
     font-size: 12px;
-    font-weight: bold;
+    font-weight: 600;
     text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #718096;
+    border-bottom: 1px solid #e2e8f0;
 }
 
-.status-completed { background: #c6f6d5; color: #22543d; }
-.status-pending { background: #feebc8; color: #744210; }
+.data-table td {
+    padding: 16px 24px;
+    border-bottom: 1px solid #edf2f7;
+    vertical-align: middle;
+    font-size: 14px;
+}
 
-/* Buttons */
-.btn-delete {
-    background: #e53e3e;
-    color: white;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 4px;
+.data-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 9999px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.status-pending {
+    background-color: #fffaf0;
+    color: #c05621;
+}
+
+.status-in_progress {
+    background-color: #ebf8ff;
+    color: #2b6cb0;
+}
+
+.status-completed {
+    background-color: #f0fff4;
+    color: #276749;
+}
+
+.task-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 24px;
+}
+
+.task-card {
+    background: white;
+    border-radius: 8px;
+    padding: 24px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    border: 1px solid #e2e8f0;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+}
+
+.task-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.task-card h3 {
+    margin: 0 0 8px 0;
+    font-size: 18px;
+    color: #2d3748;
+}
+
+.task-card p {
+    color: #718096;
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 0 0 16px 0;
+    flex: 1;
+}
+
+.btn-update, .btn-delete {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
     cursor: pointer;
+    border: none;
+    transition: background 0.2s;
+    text-decoration: none;
 }
 
 .btn-update {
-    background: #667eea;
+    background-color: #667eea;
     color: white;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 4px;
-    cursor: pointer;
+}
+
+.btn-update:hover {
+    background-color: #5a67d8;
+}
+
+.btn-delete {
+    background-color: #fff5f5;
+    color: #e53e3e;
+}
+
+.btn-delete:hover {
+    background-color: #fed7d7;
+}
+
+form {
+    margin: 0;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #4a5568;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="date"],
+select,
+textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #2d3748;
+    background-color: white;
+    box-sizing: border-box;
+    font-family: inherit;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+textarea {
+    resize: vertical;
+    min-height: 100px;
 }

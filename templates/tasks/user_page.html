@@ -1,41 +1,35 @@
-{% load static %}
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Dashboard</title>
-    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
-    <script>
-        const accessToken = "{{ access_token|safe }}";
-        if (accessToken) {
-            sessionStorage.setItem('access_token', accessToken);
-        }
-    </script>
-</head>
-<body>
-    <div class="dashboard-container">
-        <div class="header">
-            <h2>Welcome, {{ user.username }}</h2>
-            <a href="{% url 'logout' %}" class="logout-link">Logout</a>
-        </div>
+{% extends 'tasks/base.html' %}
 
-        <div class="user-meta">
-            <p><strong>Email:</strong> {{ user.email }}</p>
-            <p><strong>Role:</strong> {{ user.role }}</p>
-        </div>
+{% block title %}My Tasks{% endblock %}
+{% block header_title %}My Assigned Tasks{% endblock %}
 
-        <h3>Assigned Tasks</h3>
-        <div class="task-grid">
-            {% for task in tasks %}
-                <div class="task-card">
-                    <h4>{{ task.title }}</h4>
-                    <p>{{ task.description }}</p>
-                    <p>Due: {{ task.due_date }}</p>
-                    <span class="status status-{{ task.status|lower }}">{{ task.status }}</span>
+{% block content %}
+<section>
+    <div class="task-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
+        {% for task in tasks %}
+            <div class="task-card" style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px;">
+                    <h3 style="margin: 0; color: #2d3748;">{{ task.title }}</h3>
+                    <span class="status-badge status-{{ task.status|lower }}">{{ task.status }}</span>
                 </div>
-            {% empty %}
-                <p>No tasks found.</p>
-            {% endfor %}
-        </div>
+                
+                <p style="color: #718096; margin-bottom: 15px;">{{ task.description }}</p>
+                <p style="font-size: 0.9em; color: #4a5568;"><strong>Due:</strong> {{ task.due_date }}</p>
+                
+                {% if task.status != 'COMPLETED' %}
+                    <a href="{% url 'update_task' task.id %}" class="btn-update" style="display: inline-block; text-align: center; text-decoration: none; margin-top: 10px;">
+                        Complete Task & Report
+                    </a>
+                {% else %}
+                    <div style="margin-top: 15px; padding-top: 10px; border-top: 1px solid #edf2f7;">
+                        <p style="font-size: 0.9em;"><strong>Hours:</strong> {{ task.worked_hours }}</p>
+                        <p style="font-size: 0.9em;"><strong>Report:</strong> {{ task.completion_report }}</p>
+                    </div>
+                {% endif %}
+            </div>
+        {% empty %}
+            <p>You have no assigned tasks.</p>
+        {% endfor %}
     </div>
-</body>
-</html>
+</section>
+{% endblock %}

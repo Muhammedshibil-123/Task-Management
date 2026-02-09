@@ -1,45 +1,46 @@
 {% extends 'tasks/base.html' %}
 
 {% block title %}SuperAdmin Dashboard{% endblock %}
-{% block header_title %}System Administration{% endblock %}
+{% block header_title %}
+    {% if tab == 'users' %}User Management
+    {% elif tab == 'assign' %}Assign New Task
+    {% else %}Project Details
+    {% endif %}
+{% endblock %}
 
 {% block content %}
+
+{% if tab == 'users' %}
 <section>
-    <h3>User & Admin Management</h3>
     <table class="data-table">
         <thead>
             <tr>
-                <th>User</th>
+                <th>Username</th>
+                <th>Email</th>
                 <th>Role</th>
-                <th>Assigned Admin</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
             {% for u in users %}
             <tr>
+                <td>{{ u.username }}</td>
+                <td>{{ u.email }}</td>
                 <td>
-                    <strong>{{ u.username }}</strong><br>
-                    <small>{{ u.email }}</small>
-                </td>
-                <td>
-                    <form method="POST" action="#">
+                    <form method="POST" action="{% url 'change_user_role' %}" style="display:flex; gap:10px;">
                         {% csrf_token %}
                         <input type="hidden" name="user_id" value="{{ u.id }}">
-                        <select name="role">
+                        <select name="role" onchange="this.form.submit()">
                             <option value="USER" {% if u.role == 'USER' %}selected{% endif %}>User</option>
                             <option value="ADMIN" {% if u.role == 'ADMIN' %}selected{% endif %}>Admin</option>
                             <option value="SUPERADMIN" {% if u.role == 'SUPERADMIN' %}selected{% endif %}>SuperAdmin</option>
                         </select>
-                        <button type="submit" class="btn-update">Change</button>
                     </form>
                 </td>
-                <td>{{ u.assigned_admin.username|default:"Unassigned" }}</td>
                 <td>
-                    <form method="POST" action="#" style="display:inline;">
+                    <form method="POST" action="{% url 'delete_user' u.id %}">
                         {% csrf_token %}
-                        <input type="hidden" name="delete_user_id" value="{{ u.id }}">
-                        <button type="submit" class="btn-delete" onclick="return confirm('Delete user {{ u.username }}?')">Delete</button>
+                        <button type="submit" class="btn-delete" onclick="return confirm('Are you sure you want to delete this user?')">Delete</button>
                     </form>
                 </td>
             </tr>
@@ -48,15 +49,42 @@
     </table>
 </section>
 
-<section style="margin-top: 40px;">
-    <h3>All Task Statuses & Reports</h3>
+{% elif tab == 'assign' %}
+<section>
+    <div style="background: white; padding: 20px; border-radius: 8px; max-width: 600px;">
+        <form method="POST" action="{% url 'assign_task' %}">
+            {% csrf_token %}
+            <div class="input-group">
+                <label>Task Title</label>
+                {{ form.title }}
+            </div>
+            <div class="input-group">
+                <label>Description</label>
+                {{ form.description }}
+            </div>
+            <div class="input-group">
+                <label>Assign To</label>
+                {{ form.assigned_to }}
+            </div>
+            <div class="input-group">
+                <label>Due Date</label>
+                {{ form.due_date }}
+            </div>
+            <button type="submit" class="btn-update">Assign Task</button>
+        </form>
+    </div>
+</section>
+
+{% else %}
+<section>
     <table class="data-table">
         <thead>
             <tr>
-                <th>Task</th>
+                <th>Title</th>
                 <th>Assigned To</th>
+                <th>Due Date</th>
                 <th>Status</th>
-                <th>Report Summary</th>
+                <th>Report</th>
                 <th>Hours</th>
             </tr>
         </thead>
@@ -65,14 +93,17 @@
             <tr>
                 <td>{{ task.title }}</td>
                 <td>{{ task.assigned_to.username }}</td>
-                <td>
-                    <span class="status-badge status-{{ task.status|lower }}">{{ task.status }}</span>
-                </td>
-                <td>{{ task.completion_report|default:"Pending"|truncatewords:10 }}</td>
+                <td>{{ task.due_date }}</td>
+                <td><span class="status-badge status-{{ task.status|lower }}">{{ task.status }}</span></td>
+                <td>{{ task.completion_report|default:"-" }}</td>
                 <td>{{ task.worked_hours|default:"0" }}</td>
             </tr>
+            {% empty %}
+            <tr><td colspan="6">No tasks found.</td></tr>
             {% endfor %}
         </tbody>
     </table>
 </section>
+{% endif %}
+
 {% endblock %}
