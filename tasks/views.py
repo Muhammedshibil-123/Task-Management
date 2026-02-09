@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from rest_framework.views import APIView
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework import status, permissions
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -176,47 +176,44 @@ def change_user_role(request):
         
     return redirect('/dashboard/superadmin/?tab=users')
 
-class TaskListAPI(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+@api_view(['GET'])
+@permission_classes([permissions.IsAuthenticated])
+def api_task_list(request):
+    tasks = Task.objects.filter(assigned_to=request.user)
+    serializer = TaskSerializer(tasks, many=True)
+    return Response(serializer.data)
 
-    def get(self, request):
-        tasks = Task.objects.filter(assigned_to=request.user)
-        serializer = TaskSerializer(tasks, many=True)
+@api_view(['PUT'])
+@permission_classes([permissions.IsAuthenticated])
+def api_task_update(request, pk):
+    task = get_object_or_404(Task, pk=pk, assigned_to=request.user)
+    
+    data = request.data.copy()
+    data['status'] = 'COMPLETED'
+    
+    serializer = TaskSerializer(task, data=data, partial=True)
+    if serializer.is_valid():
+        if not data.get('completion_report') or not data.get('worked_hours'):
+             return Response({"error": "Completion report and worked hours are required."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        serializer.save()
         return Response(serializer.data)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class TaskUpdateAPI(APIView):
-    permission_classes = [permissions.IsAuthenticated]
-
-    def put(self, request, pk):
-        task = get_object_or_404(Task, pk=pk, assigned_to=request.user)
+@api_view(['GET'])
+@permission_classes([permissions.IsAuthenticated])
+def api_task_report(request, pk):
+    if request.user.role not in ['SUPERADMIN', 'ADMIN']:
+        return Response({"error": "Permission denied"}, status=status.HTTP_403_FORBIDDEN)
         
-        data = request.data.copy()
-        data['status'] = 'COMPLETED'
-        
-        serializer = TaskSerializer(task, data=data, partial=True)
-        if serializer.is_valid():
-            if not data.get('completion_report') or not data.get('worked_hours'):
-                 return Response({"error": "Completion report and worked hours are required."}, status=status.HTTP_400_BAD_REQUEST)
-            
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    task = get_object_or_404(Task, pk=pk)
+    
+    if request.user.role == 'ADMIN':
+         if task.assigned_to.assigned_admin != request.user:
+             return Response({"error": "Permission denied"}, status=status.HTTP_403_FORBIDDEN)
+             
+    if task.status != 'COMPLETED':
+         return Response({"error": "Task is not completed"}, status=status.HTTP_400_BAD_REQUEST)
 
-class TaskReportAPI(APIView):
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get(self, request, pk):
-        if request.user.role not in ['SUPERADMIN', 'ADMIN']:
-            return Response({"error": "Permission denied"}, status=status.HTTP_403_FORBIDDEN)
-            
-        task = get_object_or_404(Task, pk=pk)
-        
-        if request.user.role == 'ADMIN':
-             if task.assigned_to.assigned_admin != request.user:
-                 return Response({"error": "Permission denied"}, status=status.HTTP_403_FORBIDDEN)
-                 
-        if task.status != 'COMPLETED':
-             return Response({"error": "Task is not completed"}, status=status.HTTP_400_BAD_REQUEST)
-
-        serializer = TaskReportSerializer(task)
-        return Response(serializer.data)
+    serializer = TaskReportSerializer(task)
+    return Response(serializer.data)

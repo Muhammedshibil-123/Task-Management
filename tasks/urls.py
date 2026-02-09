@@ -16,7 +16,8 @@ urlpatterns = [
     path('user/delete/<int:user_id>/', views.delete_user, name='delete_user'),
     path('user/change-role/', views.change_user_role, name='change_user_role'),
 
-    path('api/tasks/', views.TaskListAPI.as_view(), name='api_task_list'),
-    path('api/tasks/<int:pk>/', views.TaskUpdateAPI.as_view(), name='api_task_update'),
-    path('api/tasks/<int:pk>/report/', views.TaskReportAPI.as_view(), name='api_task_report'),
+
+    path('api/tasks/', views.api_task_list, name='api_task_list'),
+    path('api/tasks/<int:pk>/', views.api_task_update, name='api_task_update'),
+    path('api/tasks/<int:pk>/report/', views.api_task_report, name='api_task_report'),
 ]
