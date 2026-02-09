@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from .models import Task
 
 User = get_user_model()
 
@@ -26,3 +27,14 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['role'] = user.role
         token['username'] = user.username
         return token
+
+class TaskSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Task
+        fields = ['id', 'title', 'description', 'due_date', 'status', 'completion_report', 'worked_hours', 'assigned_to', 'created_by']
+        read_only_fields = ['title', 'description', 'due_date', 'assigned_to', 'created_by']
+
+class TaskReportSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Task
+        fields = ['id', 'status', 'completion_report', 'worked_hours']

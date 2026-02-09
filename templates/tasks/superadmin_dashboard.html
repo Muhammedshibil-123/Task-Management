@@ -18,6 +18,7 @@
                 <th>Username</th>
                 <th>Email</th>
                 <th>Role</th>
+                <th>Assign Admin</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -27,14 +28,26 @@
                 <td>{{ u.username }}</td>
                 <td>{{ u.email }}</td>
                 <td>
-                    <form method="POST" action="{% url 'change_user_role' %}" style="display:flex; gap:10px;">
+                    <form method="POST" action="{% url 'change_user_role' %}" id="role-form-{{u.id}}" style="display:flex; gap:10px;">
                         {% csrf_token %}
                         <input type="hidden" name="user_id" value="{{ u.id }}">
-                        <select name="role" onchange="this.form.submit()">
+                        <select name="role" onchange="document.getElementById('role-form-{{u.id}}').submit()">
                             <option value="USER" {% if u.role == 'USER' %}selected{% endif %}>User</option>
                             <option value="ADMIN" {% if u.role == 'ADMIN' %}selected{% endif %}>Admin</option>
                             <option value="SUPERADMIN" {% if u.role == 'SUPERADMIN' %}selected{% endif %}>SuperAdmin</option>
                         </select>
+                </td>
+                <td>
+                    {% if u.role == 'USER' %}
+                        <select name="assigned_admin" onchange="document.getElementById('role-form-{{u.id}}').submit()">
+                            <option value="">-- No Admin --</option>
+                            {% for admin in admins %}
+                                <option value="{{ admin.id }}" {% if u.assigned_admin.id == admin.id %}selected{% endif %}>{{ admin.username }}</option>
+                            {% endfor %}
+                        </select>
+                    {% else %}
+                        -
+                    {% endif %}
                     </form>
                 </td>
                 <td>
