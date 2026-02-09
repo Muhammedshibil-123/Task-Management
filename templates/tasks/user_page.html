@@ -1,11 +1,41 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
+<head>
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    <script>
+        const accessToken = "{{ access_token|safe }}";
+        if (accessToken) {
+            sessionStorage.setItem('access_token', accessToken);
+        }
+    </script>
+</head>
 <body>
-    <h2>User Dashboard</h2>
-    <p>Welcome, {{ user.username }}!</p>
-    <p>Email: {{ user.email }}</p>
-    <p>Role: {{ user.role }}</p>
-    <br>
-    <a href="{% url 'logout' %}">Logout</a>
+    <div class="dashboard-container">
+        <div class="header">
+            <h2>Welcome, {{ user.username }}</h2>
+            <a href="{% url 'logout' %}" class="logout-link">Logout</a>
+        </div>
+
+        <div class="user-meta">
+            <p><strong>Email:</strong> {{ user.email }}</p>
+            <p><strong>Role:</strong> {{ user.role }}</p>
+        </div>
+
+        <h3>Assigned Tasks</h3>
+        <div class="task-grid">
+            {% for task in tasks %}
+                <div class="task-card">
+                    <h4>{{ task.title }}</h4>
+                    <p>{{ task.description }}</p>
+                    <p>Due: {{ task.due_date }}</p>
+                    <span class="status status-{{ task.status|lower }}">{{ task.status }}</span>
+                </div>
+            {% empty %}
+                <p>No tasks found.</p>
+            {% endfor %}
+        </div>
+    </div>
 </body>
 </html>

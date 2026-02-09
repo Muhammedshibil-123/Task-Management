@@ -1,11 +1,12 @@
 from django.urls import path
-from .views import register_page, login_page, user_page, logout_user
-from rest_framework_simplejwt.views import TokenRefreshView
+from . import views
 
 urlpatterns = [
-    path('register/', register_page, name='register_page'),
-    path('', login_page, name='login_page'),
-    path('user/', user_page, name='user_page'),
-    path('logout/', logout_user, name='logout'),
-    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('', views.login_page, name='login_page'),
+    path('register/', views.register_page, name='register_page'),
+    path('user/', views.user_page, name='user_page'),
+    path('task/update/<int:task_id>/', views.update_task_status, name='update_task'),
+    path('admin-dashboard/', views.admin_dashboard, name='admin_dashboard'),
+    path('superadmin-dashboard/', views.superadmin_dashboard, name='superadmin_dashboard'),
+    path('logout/', views.logout_user, name='logout'),
 ]
