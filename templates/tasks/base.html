@@ -1,0 +1,41 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Task Management{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>Task Manager</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    {% if user.role == 'SUPERADMIN' %}
+                        <li><a href="{% url 'superadmin_dashboard' %}">User Management</a></li>
+                        <li><a href="{% url 'superadmin_dashboard' %}">All Tasks</a></li>
+                    {% elif user.role == 'ADMIN' %}
+                        <li><a href="{% url 'admin_dashboard' %}">Team Tasks</a></li>
+                        <li><a href="#">Assign Tasks</a></li>
+                    {% endif %}
+                    <li><a href="{% url 'user_page' %}">My Profile</a></li>
+                    <li><a href="{% url 'logout' %}" style="margin-top: 50px; color: #fc8181;">Logout</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="content-header">
+                <h1>{% block header_title %}{% endblock %}</h1>
+                <span>Welcome, <strong>{{ user.username }}</strong> ({{ user.role }})</span>
+            </header>
+            
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+</body>
+</html>

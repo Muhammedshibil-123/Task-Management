@@ -1,0 +1,114 @@
+/* Dashboard Layout */
+.dashboard-container {
+    display: flex;
+    min-height: 100vh;
+    font-family: 'Inter', sans-serif;
+    background-color: #f7fafc;
+}
+
+/* Sidebar Styling */
+.sidebar {
+    width: 260px;
+    background-color: #2d3748;
+    color: white;
+    padding: 20px 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-header {
+    padding: 0 20px 20px;
+    border-bottom: 1px solid #4a5568;
+    margin-bottom: 20px;
+}
+
+.sidebar-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar-nav li a {
+    display: block;
+    padding: 12px 20px;
+    color: #cbd5e0;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+
+.sidebar-nav li a:hover {
+    background-color: #4a5568;
+    color: white;
+}
+
+.sidebar-nav li a.active {
+    background-color: #667eea;
+    color: white;
+}
+
+/* Main Content Area */
+.main-content {
+    flex: 1;
+    padding: 30px;
+    overflow-y: auto;
+}
+
+.content-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+/* Table Styling */
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.data-table th, .data-table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #edf2f7;
+}
+
+.data-table th {
+    background-color: #edf2f7;
+    color: #4a5568;
+    font-weight: 600;
+}
+
+/* Status Badges */
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.status-completed { background: #c6f6d5; color: #22543d; }
+.status-pending { background: #feebc8; color: #744210; }
+
+/* Buttons */
+.btn-delete {
+    background: #e53e3e;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-update {
+    background: #667eea;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+}

@@ -1,0 +1,44 @@
+{% extends 'tasks/base.html' %}
+
+{% block title %}Admin Dashboard{% endblock %}
+{% block header_title %}Team Overview{% endblock %}
+
+{% block content %}
+<section>
+    <h3>Team Progress & Completion Reports</h3>
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Task</th>
+                <th>Assigned User</th>
+                <th>Status</th>
+                <th>Completion Report</th>
+                <th>Worked Hours</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for task in tasks %}
+            <tr>
+                <td><strong>{{ task.title }}</strong></td>
+                <td>{{ task.assigned_to.username }}</td>
+                <td>
+                    <span class="status-badge status-{{ task.status|lower }}">{{ task.status }}</span>
+                </td>
+                <td>
+                    {% if task.status == 'COMPLETED' %}
+                        {{ task.completion_report }}
+                    {% else %}
+                        <small style="color: #a0aec0;">Waiting for completion...</small>
+                    {% endif %}
+                </td>
+                <td>{{ task.worked_hours|default:"0" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" style="text-align: center;">No users or tasks assigned to you yet.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}
