@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 
 class User(AbstractUser):
+    email = models.EmailField(unique=True)
     ROLE_CHOICES = (
         ('SUPERADMIN', 'SuperAdmin'),
         ('ADMIN', 'Admin'),
@@ -9,6 +10,9 @@ class User(AbstractUser):
     )
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='USER')
     assigned_admin = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, related_name='assigned_users')
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['username']
 
     def save(self, *args, **kwargs):
         if not self.pk and not self.is_superuser:
